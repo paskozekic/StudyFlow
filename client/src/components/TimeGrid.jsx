@@ -9,7 +9,19 @@ const HOUR_PX = 52;
  * je šrafirano, a termini učenja leže na svojim satima. Klik na prazno mjesto označava
  * to vrijeme kao zauzeto.
  */
-export default function TimeGrid({ days, sessions, blocks, windows, deadlines, onDayClick, onSessionClick, onBlockClick, onEmptyClick }) {
+export default function TimeGrid({
+  days,
+  sessions,
+  blocks,
+  windows,
+  busyWindows = [],
+  deadlines,
+  onDayClick,
+  onSessionClick,
+  onBlockClick,
+  onBusyClick,
+  onEmptyClick,
+}) {
   const today = todayISO();
   const [now, setNow] = useState(nowTime);
   useEffect(() => {
@@ -17,8 +29,10 @@ export default function TimeGrid({ days, sessions, blocks, windows, deadlines, o
     return () => clearInterval(id);
   }, []);
 
-  const windowsOf = (day) =>
-    windows.filter((w) => w.weekday === weekday(day)).map((w) => [toMinutes(w.start_time), toMinutes(w.end_time)]);
+  const rangesOf = (list, day) =>
+    list.filter((w) => w.weekday === weekday(day)).map((w) => [toMinutes(w.start_time), toMinutes(w.end_time)]);
+  const windowsOf = (day) => rangesOf(windows, day);
+  const busyOf = (day) => rangesOf(busyWindows, day);
   const sessionsOf = (day) =>
     sessions.filter((s) => s.date === day).map((s) => ({ s, range: clipToDay(day, s.start_at, s.end_at) }));
   const blocksOf = (day) =>
@@ -28,7 +42,12 @@ export default function TimeGrid({ days, sessions, blocks, windows, deadlines, o
   let minH = 8;
   let maxH = 21;
   for (const day of days) {
-    const ranges = [...windowsOf(day), ...sessionsOf(day).map((x) => x.range), ...blocksOf(day).map((x) => x.range)];
+    const ranges = [
+      ...windowsOf(day),
+      ...busyOf(day),
+      ...sessionsOf(day).map((x) => x.range),
+      ...blocksOf(day).map((x) => x.range),
+    ];
     for (const [s, e] of ranges.filter(Boolean)) {
       minH = Math.min(minH, Math.floor(s / 60));
       maxH = Math.max(maxH, Math.ceil(e / 60));
@@ -98,6 +117,21 @@ export default function TimeGrid({ days, sessions, blocks, windows, deadlines, o
         >
           {windowsOf(day).map((range, i) => (
             <div key={`w${i}`} className="tg-window" style={box(range)} />
+          ))}
+
+          {busyOf(day).map((range, i) => (
+            <button
+              key={`z${i}`}
+              className="tg-block tg-weekly"
+              style={box(range)}
+              onClick={(e) => {
+                e.stopPropagation();
+                onBusyClick();
+              }}
+              title="Zauzeto svaki tjedan"
+            >
+              <strong>Zauzeto</strong>
+            </button>
           ))}
 
           {blocksOf(day).map(({ b, range }) => (

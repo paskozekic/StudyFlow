@@ -71,6 +71,7 @@ export default function Calendar({ version, onDayClick, onChange, notify, open }
   const obligations = useApi('/obligations', version);
   const blocks = useApi(`/unavailability?from=${range.start}&to=${range.end}`, version);
   const windows = useApi('/availability', version);
+  const busyWindows = useApi('/busy', version);
 
   const changeView = (next) => {
     setView(next);
@@ -116,7 +117,9 @@ export default function Calendar({ version, onDayClick, onChange, notify, open }
       sessions={sessions.data ?? []}
       blocks={blocks.data ?? []}
       windows={windows.data ?? []}
+      busyWindows={busyWindows.data ?? []}
       deadlines={deadlinesOf}
+      onBusyClick={() => open('unavailability')}
       onDayClick={onDayClick}
       onSessionClick={(session) => open('session', { session })}
       onBlockClick={(block) => open('unavailability', { block })}

@@ -1,48 +1,53 @@
 import { useState } from 'react';
-import { AvailabilityForm } from './AvailabilityForm.jsx';
+import { WeeklyWindowsForm } from './WeeklyWindowsForm.jsx';
 import { UnavailabilityForm } from './UnavailabilityForm.jsx';
 import Modal from './Modal.jsx';
 
 const MODES = {
-  availability: { label: '✓ Slobodan sam', title: 'Kada možeš učiti?' },
-  unavailability: { label: '⊘ Zauzet sam', title: 'Zauzeto – ne mogu učiti' },
+  free: { label: '✓ Slobodan sam', title: 'Kada možeš učiti?' },
+  busy: { label: '⊘ Zauzet sam', title: 'Kada si zauzet?' },
 };
 
 /**
- * Dostupnost i zauzeto vrijeme u istom prozoru: preklopnik na vrhu bira između tjednih
- * termina za učenje i zauzetih blokova. Oba obrasca ostaju učitana, pa se upisano ne gubi.
+ * Tjedno slobodno i zauzeto vrijeme u istom prozoru: preklopnik bira između dva jednaka
+ * obrasca (dani u tjednu + brzo postavljanje). Oba ostaju učitana, pa se upisano ne gubi.
+ *
+ * Zauzeto vezano uz točan datum (klik u kalendar, uređivanje postojećeg bloka) otvara se
+ * kao jednokratni unos, bez preklopnika.
  */
-export default function TimeModal({ mode: initialMode = 'availability', block, ...props }) {
-  const [mode, setMode] = useState(block ? 'unavailability' : initialMode);
-  const title = block ? 'Uredi zauzeto vrijeme' : MODES[mode].title;
+export default function TimeModal({ mode = 'free', block, date, time, ...props }) {
+  const [current, setCurrent] = useState(mode);
+
+  if (block || date) {
+    return (
+      <Modal title={block ? 'Uredi zauzeto vrijeme' : 'Zauzeto – jednokratno'} onClose={props.onClose} size="wide">
+        <UnavailabilityForm block={block} date={date} time={time} {...props} />
+      </Modal>
+    );
+  }
 
   return (
-    <Modal title={title} onClose={props.onClose} size="wide">
-      {!block && (
-        <div className="segmented" role="tablist" aria-label="Vrsta vremena">
-          {Object.entries(MODES).map(([value, { label }]) => (
-            <button
-              key={value}
-              type="button"
-              role="tab"
-              aria-selected={mode === value}
-              className={mode === value ? `on on-${value}` : ''}
-              onClick={() => setMode(value)}
-            >
-              {label}
-            </button>
-          ))}
-        </div>
-      )}
-
-      {!block && (
-        <div hidden={mode !== 'availability'}>
-          <AvailabilityForm {...props} />
-        </div>
-      )}
-      <div hidden={mode !== 'unavailability'}>
-        <UnavailabilityForm block={block} {...props} />
+    <Modal title={MODES[current].title} onClose={props.onClose} size="wide">
+      <div className="segmented" role="tablist" aria-label="Vrsta vremena">
+        {Object.entries(MODES).map(([value, { label }]) => (
+          <button
+            key={value}
+            type="button"
+            role="tab"
+            aria-selected={current === value}
+            className={current === value ? `on on-${value}` : ''}
+            onClick={() => setCurrent(value)}
+          >
+            {label}
+          </button>
+        ))}
       </div>
+
+      {Object.keys(MODES).map((kind) => (
+        <div key={kind} hidden={current !== kind}>
+          <WeeklyWindowsForm kind={kind} {...props} />
+        </div>
+      ))}
     </Modal>
   );
 }

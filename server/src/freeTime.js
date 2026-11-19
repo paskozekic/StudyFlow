@@ -51,13 +51,13 @@ function subtract(intervals, [cs, ce]) {
 }
 
 /**
- * Slobodno vrijeme po danima: tjedni prozori dostupnosti umanjeni za zauzete blokove
- * (nedostupnost, već odrađeni ili zadržani termini) i za vrijeme koje je danas već prošlo.
- * Rubovi se poravnavaju na mrežu od `slotMinutes`, pa učenje počinje u punih pola sata.
+ * Slobodno vrijeme po danima: tjedni prozori dostupnosti umanjeni za tjedno zauzeto vrijeme,
+ * zauzete blokove (nedostupnost, već odrađeni ili zadržani termini) i vrijeme koje je danas
+ * već prošlo. Rubovi se poravnavaju na mrežu od `slotMinutes`, pa učenje počinje u punih pola sata.
  *
  * @returns {Record<string, [number, number][]>} minute od ponoći
  */
-export function freeIntervals({ days, windows, blocked = [], now, slotMinutes = 30 }) {
+export function freeIntervals({ days, windows, busyWindows = [], blocked = [], now, slotMinutes = 30 }) {
   const nowDay = now?.slice(0, 10);
   const nowMin = now ? toMinutes(now.slice(11, 16)) : 0;
   const result = {};
@@ -70,6 +70,9 @@ export function freeIntervals({ days, windows, blocked = [], now, slotMinutes = 
     let free = merge(
       windows.filter((w) => w.weekday === weekday(day)).map((w) => [toMinutes(w.start_time), toMinutes(w.end_time)]),
     );
+    for (const w of busyWindows.filter((x) => x.weekday === weekday(day))) {
+      free = subtract(free, [toMinutes(w.start_time), toMinutes(w.end_time)]);
+    }
     for (const b of blocked) {
       const cut = clipToDay(day, b.start_at, b.end_at);
       if (cut) free = subtract(free, cut);

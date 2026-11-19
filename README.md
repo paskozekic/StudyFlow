@@ -10,7 +10,7 @@ Namijenjeno studentima FER-a (Fakultet elektrotehnike i računarstva, Sveučili�
 
 - **Uvoz FER rasporeda (.ics)**: .ics datoteka kalendara s FER weba uvozi se jednim klikom. Predavanja, laboratoriji i ostali termini postaju zauzeto vrijeme, a međuispiti i ispiti se nude kao obveze s predloženim brojem sati učenja; kolegiji se stvaraju sami. Ponovni uvoz zamjenjuje buduće termine i ažurira datume ispita bez duplikata.
 - **Unos obveza**: kolegiji, ispiti, kolokviji, zadaće i projekti s rokom, procjenom sati, prioritetom i opisom gradiva.
-- **Dostupnost u terminima**: tjedni prozori kad možeš učiti (npr. pon 9–12 i 15–21), te zauzeto vrijeme (predavanje, posao, put…) koje se može ponavljati po danima u tjednu i oduzima se od dostupnosti.
+- **Slobodno i zauzeto vrijeme na isti način**: u istom prozoru preklopnik „Slobodan sam / Zauzet sam”; oba su tjedni termini po danima (npr. pon 9–12 i 15–21) s brzim postavljanjem za radne dane, vikend ili sve dane. Zauzeto se oduzima od slobodnog. Jednokratno zauzeto (klik u kalendar, uvezeni FER termini) veže se uz točan datum.
 - **Pametno planiranje**: sati se raspoređuju ravnomjerno do dana prije roka i slažu u konkretne slobodne termine, u blokovima do 2 h uz izmjenu predmeta. Kad vremena nema dovoljno, prednost imaju hitnije obveze i one višeg prioriteta.
 - **Dinamička prilagodba**: „Nisam stigao” na terminu odmah preslaže plan od trenutnog vremena nadalje (može i isti dan navečer) i javlja kamo je učenje premješteno. Termini neodrađeni do kraja dana sami postaju propušteni.
 - **Praćenje napretka**: odrađeni sati, pripremljenost po obvezi i upozorenje kad do roka nema dovoljno vremena.
@@ -84,7 +84,8 @@ server/test/              testovi (node:test)
 | PUT/DELETE | `/api/courses/:id`  |                                              |
 | GET/POST | `/api/obligations`    | obveze (spremanje pokreće preraspodjelu)     |
 | PUT/DELETE | `/api/obligations/:id` |                                          |
-| GET/PUT | `/api/availability`    | tjedni prozori `{ weekday, start_time, end_time }` (0 = nedjelja) |
+| GET/PUT | `/api/availability`    | tjedno slobodno `{ weekday, start_time, end_time }` (0 = nedjelja) |
+| GET/PUT | `/api/busy`            | tjedno zauzeto, isti oblik kao `/api/availability` |
 | GET    | `/api/unavailability?from=&to=` | zauzeti blokovi                     |
 | POST   | `/api/unavailability`   | novi blok, opcionalno `repeat: { weekdays, until }` |
 | PUT/DELETE | `/api/unavailability/:id` |                                         |

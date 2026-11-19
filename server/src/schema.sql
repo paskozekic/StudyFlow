@@ -24,6 +24,14 @@ CREATE TABLE IF NOT EXISTS availability_windows (
   end_time TEXT NOT NULL
 );
 
+-- Tjedni prozori kad student NE može učiti (npr. svaki ponedjeljak 10–12); isti oblik kao dostupnost.
+CREATE TABLE IF NOT EXISTS busy_windows (
+  id SERIAL PRIMARY KEY,
+  weekday INTEGER NOT NULL,
+  start_time TEXT NOT NULL,
+  end_time TEXT NOT NULL
+);
+
 -- Konkretni zauzeti blokovi (predavanje, posao, put…) koji se oduzimaju od dostupnosti.
 CREATE TABLE IF NOT EXISTS unavailability (
   id SERIAL PRIMARY KEY,

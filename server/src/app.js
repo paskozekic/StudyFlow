@@ -197,24 +197,29 @@ export function createApp(db, options = {}) {
     res.status(204).end();
   });
 
-  // --- Dostupnost: tjedni prozori ---
-  api.get('/availability', async (_req, res) => {
-    res.json(await planner.getWindows());
-  });
+  // --- Tjedni prozori: slobodno (/availability) i zauzeto (/busy) rade na isti način ---
+  for (const [path, table] of [
+    ['/availability', 'availability_windows'],
+    ['/busy', 'busy_windows'],
+  ]) {
+    api.get(path, async (_req, res) => {
+      res.json(await planner.getWindows(table));
+    });
 
-  api.put('/availability', async (req, res) => {
-    const windows = parseWindows(req.body);
-    await db.query('DELETE FROM availability_windows');
-    for (const w of windows) {
-      await db.query('INSERT INTO availability_windows (weekday, start_time, end_time) VALUES ($1, $2, $3)', [
-        w.weekday,
-        w.start_time,
-        w.end_time,
-      ]);
-    }
-    await planner.replan();
-    res.json(await planner.getWindows());
-  });
+    api.put(path, async (req, res) => {
+      const windows = parseWindows(req.body);
+      await db.query(`DELETE FROM ${table}`);
+      for (const w of windows) {
+        await db.query(`INSERT INTO ${table} (weekday, start_time, end_time) VALUES ($1, $2, $3)`, [
+          w.weekday,
+          w.start_time,
+          w.end_time,
+        ]);
+      }
+      const plan = await planner.replan();
+      res.json({ windows: await planner.getWindows(table), warnings: plan.warnings });
+    });
+  }
 
   // --- Nedostupnost: konkretni zauzeti blokovi ---
   api.get('/unavailability', async (req, res) => {

@@ -19,10 +19,9 @@ export function createPlanService(db, { now = localNow } = {}) {
 
   const today = () => now().slice(0, 10);
 
-  async function getWindows() {
-    const { rows } = await db.query(
-      'SELECT weekday, start_time, end_time FROM availability_windows ORDER BY weekday, start_time',
-    );
+  /** Tjedni prozori: `availability_windows` (slobodno) ili `busy_windows` (zauzeto). */
+  async function getWindows(table = 'availability_windows') {
+    const { rows } = await db.query(`SELECT weekday, start_time, end_time FROM ${table} ORDER BY weekday, start_time`);
     return rows;
   }
 
@@ -66,7 +65,13 @@ export function createPlanService(db, { now = localNow } = {}) {
     // Odrađeni, propušteni i zadržani termini danas zauzimaju svoje vrijeme.
     const { rows: busy } = await db.query('SELECT start_at, end_at FROM study_sessions WHERE date >= $1', [day]);
 
-    const free = freeIntervals({ days, windows: await getWindows(), blocked: [...unavailable, ...busy], now: moment });
+    const free = freeIntervals({
+      days,
+      windows: await getWindows(),
+      busyWindows: await getWindows('busy_windows'),
+      blocked: [...unavailable, ...busy],
+      now: moment,
+    });
 
     const plan = buildPlan({
       obligations: obligations.map((o) => ({ ...o, effort_hours: Number(o.effort_hours) })),

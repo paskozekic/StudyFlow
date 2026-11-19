@@ -21,6 +21,20 @@ test('tjedni prozori umanjeni za zauzete blokove', () => {
   assert.deepEqual(free['2026-11-03'], [], 'utorak nema prozora');
 });
 
+test('tjedno zauzeto vrijeme oduzima se svaki taj dan u tjednu', () => {
+  const free = freeIntervals({
+    days: ['2026-11-02', '2026-11-09'],
+    windows,
+    busyWindows: [
+      { weekday: 1, start_time: '10:00', end_time: '11:00' },
+      { weekday: 1, start_time: '16:00', end_time: '18:00' },
+      { weekday: 2, start_time: '09:00', end_time: '21:00' },
+    ],
+  });
+  assert.deepEqual(fmt(free['2026-11-02']), ['09-10', '11-13', '15-16', '18-21']);
+  assert.deepEqual(free['2026-11-09'], free['2026-11-02']);
+});
+
 test('blok preko više dana briše cijeli dan', () => {
   const free = freeIntervals({
     days: ['2026-11-02'],

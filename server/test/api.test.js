@@ -90,6 +90,20 @@ test('nedostupnost s ponavljanjem uklanja termine iz plana', async () => {
   assert.equal((await call('DELETE', `/unavailability/${blocks[0].id}`)).status, 204);
 });
 
+test('tjedno zauzeto vrijeme radi kao dostupnost i miče učenje iz tih sati', async () => {
+  // svaki dan 09–11 zauzeto → ostaje samo večer 17–19
+  const res = await call('PUT', '/busy', allDays('09:00', '11:00'));
+  assert.equal(res.status, 200);
+  assert.equal(res.body.windows.length, 7);
+  assert.deepEqual((await call('GET', '/busy')).body[0], { weekday: 0, start_time: '09:00', end_time: '11:00' });
+
+  const planned = (await sessionsOf()).filter((s) => s.status === 'planned');
+  assert.ok(planned.length > 0);
+  assert.ok(planned.every((s) => s.start_at.slice(11) >= '17:00'), 'jutarnji termini su zauzeti');
+
+  assert.equal((await call('PUT', '/busy', [])).status, 200);
+});
+
 test('sljedeći dan neodrađeni termini postaju propušteni i preraspoređuju se', async () => {
   now = '2026-11-03T08:00';
   const sessions = await sessionsOf();

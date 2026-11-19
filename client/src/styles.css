@@ -420,6 +420,12 @@ h3 {
   cursor: pointer;
 }
 
+/* tjedno zauzeto: ista šrafura, isprekidan rub */
+.tg-weekly {
+  border-style: dashed;
+  color: var(--muted);
+}
+
 .tg-session {
   position: absolute;
   left: 6px;
@@ -833,11 +839,20 @@ h3 {
   box-shadow: var(--shadow);
 }
 
-.segmented .on-availability {
+.segmented .on-free {
   background: #4f8a2f;
 }
 
-.segmented .on-unavailability {
+.segmented .on-busy {
+  background: #6b7a8c;
+}
+
+/* zauzeti termini: siva umjesto zelene */
+.kind-busy .range {
+  background: color-mix(in srgb, var(--muted) 16%, var(--surface));
+}
+
+.kind-busy .quick-group {
   background: #6b7a8c;
 }
 

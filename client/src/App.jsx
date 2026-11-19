@@ -15,9 +15,9 @@ const MODALS = {
   obligation: ObligationModal,
   obligations: ObligationsModal,
   courses: CoursesModal,
-  // dostupnost i zauzeto dijele isti prozor; tip samo bira što je prvo otvoreno
-  availability: (props) => <TimeModal mode="availability" {...props} />,
-  unavailability: (props) => <TimeModal mode="unavailability" {...props} />,
+  // slobodno i zauzeto dijele isti prozor; tip samo bira što je prvo otvoreno
+  availability: (props) => <TimeModal mode="free" {...props} />,
+  unavailability: (props) => <TimeModal mode="busy" {...props} />,
   session: SessionModal,
   progress: ProgressModal,
   import: ImportModal,

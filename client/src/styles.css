@@ -1,0 +1,1610 @@
+/* Boje preuzete iz prezentacije StudyFlow */
+:root {
+  --navy: #1f4e79;
+  --blue: #2e75b6;
+  --sky: #deeaf6;
+  --orange: #ed7d31;
+  --green: #70ad47;
+
+  --bg: #f4f7fb;
+  --surface: #ffffff;
+  --surface-2: #f0f5fb;
+  --text: #17293d;
+  --muted: #5d6f84;
+  --border: #dbe4ee;
+  --primary: var(--blue);
+  --primary-strong: var(--navy);
+  --header-bg: var(--navy);
+  --shadow: 0 1px 2px rgb(16 40 70 / 6%), 0 4px 16px rgb(16 40 70 / 6%);
+  --radius: 14px;
+  color-scheme: light;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg: #0e1724;
+    --surface: #16222f;
+    --surface-2: #1c2b3b;
+    --text: #e6eef7;
+    --muted: #93a5b9;
+    --border: #2a3b4e;
+    --primary: #4a90d0;
+    --primary-strong: #8fbfea;
+    --header-bg: #0b1622;
+    --shadow: 0 1px 2px rgb(0 0 0 / 30%);
+    color-scheme: dark;
+  }
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--text);
+  font-family: 'Segoe UI', system-ui, -apple-system, Roboto, 'Helvetica Neue', Arial, sans-serif;
+  font-size: 15px;
+  line-height: 1.5;
+}
+
+h1,
+h2,
+h3 {
+  margin: 0;
+  line-height: 1.25;
+}
+
+.muted {
+  color: var(--muted);
+}
+
+.small {
+  font-size: 0.85rem;
+}
+
+.error {
+  color: #c0392b;
+}
+
+/* --- Zaglavlje s gumbima --- */
+.app {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+.topbar {
+  display: flex;
+  align-items: center;
+  gap: 1.25rem;
+  padding: 0.6rem 1.25rem;
+  background: var(--header-bg);
+  color: #fff;
+  position: sticky;
+  top: 0;
+  z-index: 10;
+}
+
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+}
+
+.brand h1 {
+  font-size: 1.15rem;
+}
+
+.brand-sub {
+  margin: 0;
+  font-size: 0.72rem;
+  opacity: 0.75;
+}
+
+.brand-mark {
+  display: grid;
+  place-items: center;
+  width: 34px;
+  height: 34px;
+  border-radius: 10px;
+  background: var(--orange);
+  font-weight: 700;
+}
+
+.toolbar {
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+  margin-left: auto;
+}
+
+.tool {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.5rem 0.8rem;
+  border: 0;
+  border-radius: 999px;
+  background: transparent;
+  color: inherit;
+  font: inherit;
+  cursor: pointer;
+  opacity: 0.85;
+}
+
+.tool:hover:not(:disabled) {
+  opacity: 1;
+  background: rgb(255 255 255 / 12%);
+}
+
+.tool:disabled {
+  opacity: 0.5;
+}
+
+.toolbar .btn-accent {
+  margin-right: 0.5rem;
+}
+
+/* --- Kalendar --- */
+.content {
+  flex: 1;
+  display: flex;
+  width: 100%;
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 1rem 1.25rem 1.25rem;
+}
+
+.calendar {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.calendar-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 1rem;
+  margin-bottom: 0.75rem;
+}
+
+.calendar-head h2 {
+  font-size: 1.5rem;
+  color: var(--primary-strong);
+}
+
+.calendar-grid {
+  flex: 1;
+  display: grid;
+  grid-template-columns: repeat(7, minmax(0, 1fr));
+  grid-auto-rows: minmax(110px, 1fr);
+  grid-template-rows: auto;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  overflow: hidden;
+  background: var(--border);
+  gap: 1px;
+  box-shadow: var(--shadow);
+}
+
+.weekday {
+  padding: 0.4rem 0.6rem;
+  background: var(--surface-2);
+  color: var(--muted);
+  font-size: 0.8rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+}
+
+.day-cell {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  gap: 0.25rem;
+  min-width: 0;
+  padding: 0.4rem;
+  border: 0;
+  background: var(--surface);
+  color: inherit;
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+}
+
+.day-cell:hover {
+  background: var(--surface-2);
+}
+
+.day-cell:focus-visible {
+  outline: 2px solid var(--primary);
+  outline-offset: -2px;
+}
+
+.day-cell.other-month {
+  background: var(--surface-2);
+}
+
+.day-cell.other-month .day-number {
+  opacity: 0.45;
+}
+
+.day-cell.is-past .cal-item:not(.cal-deadline) {
+  opacity: 0.6;
+}
+
+.day-number {
+  align-self: flex-start;
+  min-width: 26px;
+  height: 26px;
+  display: grid;
+  place-items: center;
+  border-radius: 999px;
+  font-size: 0.85rem;
+  font-weight: 600;
+}
+
+.is-today .day-number {
+  background: var(--orange);
+  color: #fff;
+}
+
+.day-items {
+  display: grid;
+  gap: 3px;
+  min-width: 0;
+}
+
+.cal-item {
+  display: block;
+  padding: 1px 6px;
+  border-radius: 6px;
+  font-size: 0.76rem;
+  line-height: 1.5;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  background: color-mix(in srgb, var(--course) 16%, var(--surface));
+  border-left: 3px solid var(--course);
+}
+
+.cal-deadline {
+  background: var(--course);
+  border-left-color: var(--course);
+  color: #fff;
+  font-weight: 600;
+}
+
+.cal-done {
+  text-decoration: line-through;
+  opacity: 0.6;
+}
+
+.cal-more {
+  font-size: 0.72rem;
+  color: var(--muted);
+  padding-left: 6px;
+}
+
+.view-select {
+  width: auto;
+  padding-right: 2rem;
+  font-weight: 600;
+  color: var(--primary-strong);
+  cursor: pointer;
+}
+
+.cal-time {
+  font-variant-numeric: tabular-nums;
+  opacity: 0.75;
+}
+
+/* --- Vremenska mreža (tjedan i dan) --- */
+.time-grid {
+  display: grid;
+  grid-template-columns: 52px repeat(var(--cols), minmax(0, 1fr));
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  background: var(--surface);
+  box-shadow: var(--shadow);
+  overflow: hidden;
+}
+
+.tg-corner,
+.tg-allday-label {
+  border-bottom: 1px solid var(--border);
+}
+
+.tg-allday-label {
+  padding: 0.3rem 0.4rem;
+  text-align: right;
+}
+
+.tg-day-head {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.35rem;
+  padding: 0.4rem;
+  border: 0;
+  border-left: 1px solid var(--border);
+  border-bottom: 1px solid var(--border);
+  background: var(--surface-2);
+  color: inherit;
+  font: inherit;
+  cursor: pointer;
+}
+
+.tg-day-head:hover {
+  background: var(--sky);
+}
+
+.tg-day-head.is-today .day-number {
+  background: var(--orange);
+  color: #fff;
+}
+
+.tg-allday {
+  display: grid;
+  gap: 3px;
+  align-content: start;
+  padding: 0.3rem;
+  min-width: 0;
+  border-left: 1px solid var(--border);
+  border-bottom: 1px solid var(--border);
+}
+
+.tg-hours {
+  position: relative;
+}
+
+.tg-hours span {
+  position: absolute;
+  right: 6px;
+  transform: translateY(-50%);
+  font-size: 0.72rem;
+  color: var(--muted);
+  font-variant-numeric: tabular-nums;
+}
+
+.tg-hours span:first-child {
+  transform: none;
+}
+
+.tg-col {
+  position: relative;
+  border-left: 1px solid var(--border);
+  cursor: cell;
+  background-image: repeating-linear-gradient(
+    to bottom,
+    var(--border) 0 1px,
+    transparent 1px var(--hour)
+  );
+}
+
+.tg-col.is-past {
+  background-color: color-mix(in srgb, var(--surface-2) 60%, transparent);
+}
+
+.tg-window {
+  position: absolute;
+  left: 0;
+  right: 0;
+  background: color-mix(in srgb, var(--green) 13%, transparent);
+  border-left: 3px solid color-mix(in srgb, var(--green) 55%, transparent);
+  pointer-events: none;
+}
+
+.tg-block {
+  position: absolute;
+  left: 4px;
+  right: 4px;
+  z-index: 1;
+  overflow: hidden;
+  padding: 2px 6px;
+  border: 1px solid color-mix(in srgb, var(--muted) 45%, transparent);
+  border-radius: 6px;
+  background: repeating-linear-gradient(
+    -45deg,
+    color-mix(in srgb, var(--muted) 18%, var(--surface)) 0 6px,
+    color-mix(in srgb, var(--muted) 8%, var(--surface)) 6px 12px
+  );
+  color: var(--text);
+  font: inherit;
+  font-size: 0.75rem;
+  text-align: left;
+  cursor: pointer;
+}
+
+.tg-session {
+  position: absolute;
+  left: 6px;
+  right: 6px;
+  z-index: 2;
+  display: grid;
+  align-content: start;
+  overflow: hidden;
+  padding: 3px 7px;
+  border: 0;
+  border-left: 4px solid var(--course);
+  border-radius: 7px;
+  background: color-mix(in srgb, var(--course) 22%, var(--surface));
+  color: var(--text);
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+  box-shadow: 0 1px 3px rgb(10 30 60 / 15%);
+}
+
+.tg-session:hover {
+  background: color-mix(in srgb, var(--course) 32%, var(--surface));
+}
+
+.tg-session-title {
+  font-size: 0.8rem;
+  font-weight: 600;
+  line-height: 1.25;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.tg-session-time {
+  font-size: 0.72rem;
+  opacity: 0.8;
+  font-variant-numeric: tabular-nums;
+}
+
+/* kratki termin: naziv i vrijeme u jednom retku */
+.tg-compact {
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+  padding-block: 0;
+}
+
+.tg-compact .tg-session-title {
+  flex: 1;
+  min-width: 0;
+}
+
+.tg-done {
+  opacity: 0.6;
+}
+
+.tg-done .tg-session-title {
+  text-decoration: line-through;
+}
+
+.tg-missed {
+  opacity: 0.45;
+  background: var(--surface-2);
+  border-left-style: dashed;
+}
+
+.tg-missed .tg-session-title {
+  text-decoration: line-through;
+}
+
+.tg-now {
+  position: absolute;
+  left: 0;
+  right: 0;
+  z-index: 3;
+  height: 2px;
+  background: var(--orange);
+  pointer-events: none;
+}
+
+.tg-now::before {
+  content: '';
+  position: absolute;
+  left: -5px;
+  top: -4px;
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: var(--orange);
+}
+
+.only-narrow {
+  display: none;
+}
+
+/* --- Dnevni prikaz: mreža + popis --- */
+.day-layout {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  gap: 1rem;
+  align-items: start;
+  width: 100%;
+}
+
+/* --- Tjedan na mobitelu --- */
+.week-list {
+  display: grid;
+  gap: 0.5rem;
+}
+
+.week-day {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  min-width: 0;
+  padding: 0.6rem;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  background: var(--surface);
+  color: inherit;
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+  box-shadow: var(--shadow);
+}
+
+.week-day:hover {
+  background: var(--surface-2);
+}
+
+.week-day.is-today {
+  border-color: var(--orange);
+  box-shadow: inset 0 0 0 1px var(--orange);
+}
+
+.week-day.is-past .cal-item:not(.cal-deadline) {
+  opacity: 0.6;
+}
+
+.week-day-head {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.week-day .day-items {
+  gap: 0.35rem;
+}
+
+.cal-wrap {
+  display: grid;
+  padding: 0.3rem 0.5rem;
+  white-space: normal;
+  font-size: 0.82rem;
+  line-height: 1.35;
+}
+
+.cal-hours {
+  font-size: 0.75rem;
+  opacity: 0.8;
+}
+
+.day-view {
+  padding: 1.25rem;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  background: var(--surface);
+  box-shadow: var(--shadow);
+}
+
+.session-time {
+  display: grid;
+  min-width: 42px;
+  font-size: 0.82rem;
+  font-weight: 700;
+  line-height: 1.3;
+  font-variant-numeric: tabular-nums;
+}
+
+.session-time .muted {
+  font-weight: 500;
+}
+
+.session-meta {
+  display: flex;
+  align-items: center;
+  margin: 0 0 0.5rem;
+  color: var(--muted);
+}
+
+.busy-row {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  width: 100%;
+  padding: 0.55rem 0.75rem;
+  border: 1px dashed color-mix(in srgb, var(--muted) 50%, transparent);
+  border-radius: 12px;
+  background: transparent;
+  color: inherit;
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+}
+
+.busy-row:hover {
+  background: var(--surface-2);
+}
+
+/* --- Dostupnost i zauzeto --- */
+.windows {
+  display: grid;
+  gap: 0.25rem;
+}
+
+.window-day {
+  display: grid;
+  grid-template-columns: 120px 1fr;
+  gap: 0.35rem 0.75rem;
+  align-items: center;
+  padding: 0.5rem 0;
+  border-bottom: 1px solid var(--border);
+}
+
+.window-day-name {
+  display: grid;
+}
+
+.window-ranges {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.4rem;
+}
+
+.range {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+  padding: 0.15rem 0.2rem 0.15rem 0.35rem;
+  border-radius: 10px;
+  background: color-mix(in srgb, var(--green) 14%, var(--surface));
+}
+
+.range.invalid {
+  background: #f9dcd8;
+}
+
+.range input {
+  width: auto;
+  padding: 0.25rem 0.35rem;
+  font-variant-numeric: tabular-nums;
+}
+
+.quick-set {
+  display: grid;
+  gap: 0.5rem;
+  padding: 0.85rem 1rem;
+  border-radius: 12px;
+  background: var(--surface-2);
+}
+
+.quick-entry {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.back-btn {
+  justify-self: start;
+  padding: 0;
+  border: 0;
+  background: none;
+  color: var(--primary-strong);
+  font: inherit;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.quick-title {
+  margin-bottom: 0.25rem;
+  font-size: 1.1rem;
+  color: var(--primary-strong);
+}
+
+.quick-screen p {
+  margin: 0;
+}
+
+.quick-groups {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 0.6rem;
+}
+
+.quick-group {
+  display: grid;
+  gap: 0.2rem;
+  padding: 0.9rem 0.75rem;
+  border: 0;
+  border-radius: 12px;
+  background: var(--primary);
+  color: #fff;
+  font: inherit;
+  cursor: pointer;
+}
+
+.quick-group:hover:not(:disabled) {
+  filter: brightness(1.08);
+}
+
+.quick-group:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.quick-group .small {
+  opacity: 0.85;
+}
+
+.applied {
+  color: #3d6b22;
+  font-weight: 600;
+}
+
+.form .check-row {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-weight: 600;
+}
+
+.check-row input[type='checkbox'] {
+  margin: 0;
+}
+
+.repeat {
+  display: grid;
+  gap: 0.75rem;
+  padding: 0.75rem;
+  border-radius: 12px;
+  background: var(--surface-2);
+}
+
+.weekday-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.35rem;
+}
+
+.chip-toggle {
+  min-width: 46px;
+  padding: 0.35rem 0.6rem;
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  background: var(--surface);
+  color: var(--text);
+  font: inherit;
+  font-size: 0.85rem;
+  cursor: pointer;
+}
+
+.chip-toggle.on {
+  background: var(--primary);
+  border-color: var(--primary);
+  color: #fff;
+  font-weight: 600;
+}
+
+/* --- Uvoz FER rasporeda --- */
+.welcome {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-bottom: 0.75rem;
+  padding: 0.8rem 1rem;
+  border-radius: var(--radius);
+  background: var(--sky);
+  color: var(--navy);
+}
+
+.welcome > div {
+  display: grid;
+}
+
+/* preklopnik Slobodan sam / Zauzet sam */
+.segmented {
+  display: flex;
+  margin-bottom: 1rem;
+  padding: 4px;
+  border-radius: 999px;
+  background: var(--surface-2);
+}
+
+.segmented button {
+  flex: 1;
+  padding: 0.5rem 0.9rem;
+  border: 0;
+  border-radius: 999px;
+  background: transparent;
+  color: var(--muted);
+  font: inherit;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.segmented button.on {
+  color: #fff;
+  box-shadow: var(--shadow);
+}
+
+.segmented .on-availability {
+  background: #4f8a2f;
+}
+
+.segmented .on-unavailability {
+  background: #6b7a8c;
+}
+
+.form .dropzone {
+  display: grid;
+  justify-items: center;
+  gap: 0.2rem;
+  padding: 1.5rem 1rem;
+  border: 2px dashed var(--border);
+  border-radius: 14px;
+  text-align: center;
+  cursor: pointer;
+}
+
+.dropzone:hover,
+.dropzone.has-file {
+  border-color: var(--primary);
+  background: color-mix(in srgb, var(--primary) 6%, transparent);
+}
+
+.dropzone input {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  opacity: 0;
+}
+
+.import-summary {
+  display: grid;
+  gap: 0.15rem;
+  padding: 0.75rem 1rem;
+  border-radius: 12px;
+  background: var(--surface-2);
+}
+
+.exam-row {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.6rem 0.75rem;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+}
+
+.exam-row .check {
+  display: flex;
+  align-items: flex-start;
+  font-weight: 400;
+}
+
+.exam-row.off {
+  opacity: 0.55;
+}
+
+.exam-row .session-title {
+  flex-wrap: wrap;
+  gap: 0.4rem;
+}
+
+.form .hours-field {
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+  font-weight: 400;
+}
+
+.hours-field input {
+  width: 70px;
+}
+
+.form-row.form-row-3 {
+  grid-template-columns: 1.4fr 1fr 1fr;
+}
+
+.section-meta {
+  float: right;
+  text-transform: none;
+  letter-spacing: 0;
+  font-weight: 700;
+  color: var(--primary-strong);
+}
+
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+}
+
+/* --- Gumbi i forme --- */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.35rem;
+  padding: 0.5rem 1rem;
+  border: 1px solid transparent;
+  border-radius: 10px;
+  background: var(--primary);
+  color: #fff;
+  font: inherit;
+  font-weight: 600;
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+.btn:hover:not(:disabled) {
+  filter: brightness(1.08);
+}
+
+.btn:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+}
+
+.btn-accent {
+  background: var(--orange);
+}
+
+.btn-ok {
+  background: #4f8a2f;
+}
+
+.btn-danger {
+  background: transparent;
+  color: #c0392b;
+  border-color: color-mix(in srgb, #c0392b 40%, transparent);
+}
+
+.btn-ghost {
+  background: transparent;
+  color: var(--primary-strong);
+  border-color: var(--border);
+}
+
+.btn-ghost:hover:not(:disabled),
+.btn-danger:hover:not(:disabled) {
+  background: var(--surface-2);
+  filter: none;
+}
+
+.btn.small {
+  padding: 0.25rem 0.6rem;
+  font-size: 0.82rem;
+  font-weight: 500;
+}
+
+.btn-group {
+  display: flex;
+  gap: 0.4rem;
+}
+
+.icon-btn {
+  width: 34px;
+  height: 34px;
+  border: 0;
+  border-radius: 999px;
+  background: transparent;
+  color: var(--muted);
+  font-size: 1.5rem;
+  line-height: 1;
+  cursor: pointer;
+}
+
+.icon-btn:hover {
+  background: var(--surface-2);
+  color: var(--text);
+}
+
+.icon-btn.small {
+  width: 26px;
+  height: 26px;
+  font-size: 1.1rem;
+}
+
+input,
+select,
+textarea {
+  width: 100%;
+  padding: 0.5rem 0.65rem;
+  border: 1px solid var(--border);
+  border-radius: 9px;
+  background: var(--surface);
+  color: var(--text);
+  font: inherit;
+}
+
+input:focus-visible,
+select:focus-visible,
+textarea:focus-visible,
+button:focus-visible {
+  outline: 2px solid var(--primary);
+  outline-offset: 2px;
+}
+
+input[type='color'] {
+  width: 44px;
+  height: 38px;
+  padding: 2px;
+  flex-shrink: 0;
+}
+
+input[type='checkbox'] {
+  width: 20px;
+  height: 20px;
+  accent-color: var(--green);
+  flex-shrink: 0;
+  margin-top: 2px;
+}
+
+input[type='range'] {
+  padding: 0;
+  accent-color: var(--primary);
+}
+
+.form {
+  display: grid;
+  gap: 0.9rem;
+}
+
+.form label {
+  display: grid;
+  gap: 0.25rem;
+  font-size: 0.88rem;
+  font-weight: 600;
+}
+
+.form-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.8rem;
+}
+
+.new-course {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 0.8rem;
+  padding: 0.75rem;
+  border-radius: 10px;
+  background: var(--surface-2);
+}
+
+.more summary {
+  cursor: pointer;
+  color: var(--primary-strong);
+  font-size: 0.88rem;
+  font-weight: 600;
+}
+
+.more[open] {
+  display: grid;
+  gap: 0.9rem;
+}
+
+.inline-form {
+  display: flex;
+  gap: 0.5rem;
+  margin-bottom: 1rem;
+}
+
+/* --- Pop-up prozori --- */
+.modal {
+  width: min(520px, calc(100vw - 2rem));
+  max-height: calc(100vh - 2rem);
+  padding: 0;
+  border: 0;
+  border-radius: 18px;
+  background: var(--surface);
+  color: var(--text);
+  box-shadow: 0 20px 60px rgb(10 30 60 / 30%);
+}
+
+.modal-wide {
+  width: min(680px, calc(100vw - 2rem));
+}
+
+.modal::backdrop {
+  background: rgb(10 25 45 / 45%);
+  backdrop-filter: blur(2px);
+}
+
+.modal[open] {
+  animation: pop 0.15s ease-out;
+}
+
+@keyframes pop {
+  from {
+    opacity: 0;
+    transform: translateY(8px) scale(0.98);
+  }
+}
+
+.modal-inner {
+  padding: 1.1rem 1.25rem 1.25rem;
+}
+
+.modal-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 1rem;
+  margin-bottom: 1rem;
+}
+
+.modal-head h2 {
+  font-size: 1.2rem;
+  color: var(--primary-strong);
+}
+
+.modal-actions {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 0.5rem;
+  margin-top: 1rem;
+}
+
+.modal-actions:empty {
+  display: none;
+}
+
+.spacer {
+  flex: 1;
+}
+
+.section-title {
+  font-size: 0.8rem;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--muted);
+  margin: 1rem 0 0.5rem;
+}
+
+.section-title:first-child {
+  margin-top: 0;
+}
+
+/* --- Liste --- */
+.plain-list,
+.session-list,
+.progress-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.plain-list {
+  display: grid;
+  gap: 0.4rem;
+}
+
+.list-row {
+  border: 1px solid var(--border);
+  border-radius: 12px;
+}
+
+.list-row.past {
+  opacity: 0.6;
+}
+
+.row-button {
+  display: grid;
+  gap: 0.15rem;
+  width: 100%;
+  padding: 0.6rem 0.75rem;
+  border: 0;
+  border-radius: 12px;
+  background: transparent;
+  color: inherit;
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+}
+
+.row-button:hover {
+  background: var(--surface-2);
+}
+
+.row-main {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+}
+
+.row-main .course-dot {
+  margin-right: 0;
+}
+
+.course-row {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.4rem 0.6rem;
+}
+
+.course-row strong {
+  flex: 1;
+}
+
+.deadline-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.6rem 0.75rem;
+  border-radius: 12px;
+  background: var(--surface-2);
+}
+
+.session-list {
+  display: grid;
+  gap: 0.5rem;
+}
+
+.session {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.65rem 0.75rem;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+}
+
+.session-done {
+  background: var(--surface-2);
+}
+
+.session-done .session-title,
+.session-missed .session-title {
+  text-decoration: line-through;
+  color: var(--muted);
+}
+
+.session-missed {
+  opacity: 0.6;
+}
+
+.check {
+  display: flex;
+  gap: 0.65rem;
+  flex: 1;
+  min-width: 0;
+  cursor: pointer;
+}
+
+.session-body {
+  display: grid;
+  min-width: 0;
+}
+
+.session-title {
+  display: flex;
+  align-items: center;
+  font-weight: 600;
+}
+
+.session-hours {
+  font-weight: 700;
+  color: var(--primary-strong);
+  white-space: nowrap;
+}
+
+/* --- Oznake --- */
+.course-dot {
+  display: inline-block;
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  margin-right: 0.45rem;
+  flex-shrink: 0;
+}
+
+.tag {
+  display: inline-block;
+  padding: 0.05rem 0.55rem;
+  border-radius: 999px;
+  background: var(--surface-2);
+  color: var(--muted);
+  font-size: 0.75rem;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.tag-warn {
+  background: #fdebdc;
+  color: #a4480f;
+}
+
+.tag-ok {
+  background: #e3f1d9;
+  color: #3d6b22;
+}
+
+.tag-info {
+  background: var(--sky);
+  color: var(--navy);
+}
+
+.notice {
+  position: fixed;
+  left: 50%;
+  bottom: 1.25rem;
+  transform: translateX(-50%);
+  z-index: 20;
+  max-width: calc(100vw - 2rem);
+  padding: 0.65rem 1.1rem;
+  border-radius: 12px;
+  background: var(--navy);
+  color: #fff;
+  box-shadow: 0 8px 24px rgb(10 30 60 / 25%);
+}
+
+.notice-warn {
+  background: #a4480f;
+}
+
+.notice-error {
+  background: #a3261a;
+}
+
+/* --- Napredak --- */
+.stats {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 0.75rem;
+  margin-bottom: 1.25rem;
+}
+
+.stat {
+  display: grid;
+  padding: 0.75rem 1rem;
+  border-radius: 12px;
+  background: var(--surface-2);
+}
+
+.stat-value {
+  font-size: 1.6rem;
+  font-weight: 700;
+  color: var(--primary-strong);
+}
+
+.stat-warn .stat-value {
+  color: var(--orange);
+}
+
+.legend {
+  display: flex;
+  gap: 1rem;
+  flex-wrap: wrap;
+  margin-bottom: 0.75rem;
+  color: var(--muted);
+}
+
+.lg {
+  display: inline-block;
+  width: 12px;
+  height: 12px;
+  border-radius: 3px;
+  vertical-align: -1px;
+  margin-right: 0.25rem;
+}
+
+.lg-done,
+.bar-done {
+  background: var(--green);
+}
+
+.lg-planned,
+.bar-planned {
+  background: var(--blue);
+  opacity: 0.55;
+}
+
+.lg-missing {
+  background: var(--orange);
+}
+
+.bar-missing {
+  background: repeating-linear-gradient(45deg, var(--orange) 0 6px, #f5a46c 6px 12px);
+}
+
+.bar {
+  display: flex;
+  height: 10px;
+  margin: 0.35rem 0 0.25rem;
+  border-radius: 999px;
+  background: var(--surface-2);
+  overflow: hidden;
+}
+
+.progress-list {
+  display: grid;
+  gap: 1rem;
+}
+
+.progress-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+/* --- Uži ekrani: gumbi ikona iznad naziva --- */
+@media (max-width: 1200px) {
+  .topbar {
+    gap: 0.5rem;
+    padding: 0.5rem 0.75rem;
+  }
+}
+
+@media (max-width: 900px) {
+  .day-layout {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 1200px) {
+
+  .tool {
+    flex-direction: column;
+    gap: 0;
+    padding: 0.25rem 0.5rem;
+    font-size: 0.72rem;
+  }
+
+  .tool-icon {
+    font-size: 1.05rem;
+  }
+}
+
+/* --- Mobitel --- */
+@media (max-width: 760px) {
+  .topbar {
+    flex-wrap: wrap;
+  }
+
+  .toolbar {
+    margin-left: 0;
+    flex-basis: 100%;
+    justify-content: space-between;
+  }
+
+  .toolbar {
+    gap: 0;
+  }
+
+  .tool {
+    flex: 1;
+    min-width: 0;
+    padding: 0.25rem 0.1rem;
+    font-size: 0.66rem;
+  }
+
+  .tool-label {
+    max-width: 100%;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .tool-replan {
+    flex: 0 0 auto;
+  }
+
+  .tool-replan .tool-label {
+    display: none;
+  }
+
+  .only-wide {
+    display: none;
+  }
+
+  .only-narrow {
+    display: grid;
+  }
+
+  .window-day {
+    grid-template-columns: 1fr;
+  }
+
+  .window-day-name {
+    display: flex;
+    gap: 0.5rem;
+    align-items: baseline;
+  }
+
+  /* glavni gumb pluta u donjem desnom kutu */
+  .toolbar .btn-accent {
+    position: fixed;
+    right: 1rem;
+    bottom: 1rem;
+    z-index: 15;
+    margin: 0;
+    padding: 0.8rem 1.2rem;
+    border-radius: 999px;
+    box-shadow: 0 8px 24px rgb(10 30 60 / 30%);
+  }
+
+  .notice {
+    bottom: 5rem;
+  }
+
+  .content {
+    padding-bottom: 5rem !important;
+    padding: 0.75rem;
+  }
+
+  .calendar-head h2 {
+    font-size: 1.2rem;
+  }
+
+  .calendar-grid {
+    grid-auto-rows: minmax(64px, 1fr);
+  }
+
+  .day-cell {
+    padding: 0.2rem;
+    align-items: center;
+  }
+
+  .day-number {
+    align-self: center;
+    font-size: 0.8rem;
+  }
+
+  /* u mjesečnom prikazu na malom ekranu stavke postaju točkice */
+  .calendar-month .day-items {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 3px;
+  }
+
+  .calendar-month .cal-item {
+    width: 8px;
+    height: 8px;
+    padding: 0;
+    border: 0;
+    border-radius: 50%;
+    font-size: 0;
+    background: var(--course);
+  }
+
+  .calendar-month .cal-deadline {
+    width: 10px;
+    height: 10px;
+    border-radius: 2px;
+  }
+
+  .calendar-head {
+    flex-wrap: wrap;
+  }
+
+  .day-view {
+    padding: 1rem;
+  }
+
+  .cal-more {
+    display: none;
+  }
+
+  .form-row,
+  .form-row.form-row-3,
+  .quick-groups,
+  .stats {
+    grid-template-columns: 1fr;
+  }
+}

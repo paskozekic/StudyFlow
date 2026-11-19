@@ -1,0 +1,16 @@
+services:
+  db:
+    image: postgres:17
+    environment:
+      POSTGRES_USER: studyflow
+      POSTGRES_PASSWORD: studyflow
+      POSTGRES_DB: studyflow
+    ports:
+      # 5433 na računalu, da se ne sudara s drugim PostgreSQL-om na 5432
+      - "5433:5432"
+    restart: unless-stopped
+    volumes:
+      - studyflow-data:/var/lib/postgresql/data
+
+volumes:
+  studyflow-data:
